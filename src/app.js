@@ -5,16 +5,23 @@ import { VNode } from "./vnode"
 // '$$' for real dom element
 // '__' for virtual dom element
 
-const __root = VNode.create( 
-                'div', 
-                {
-                    class: 'position-relative',
-                    id: 'wrapper'
-                },
-                [
-                    VNode.create( 'p', {}, 'Paragraph text 1' ),
-                    VNode.create( 'p', {}, 'Paragraph text 2' )
-                ]
-            ) 
+let __root
+let count = 0
 
-VNode.render( __root )
+for ( let i = 1; i < 4; i++ ) {
+
+    __root = VNode.create( 
+        'div', 
+        {
+            class: 'position-relative',
+            id: 'wrapper'
+        },
+        [
+            VNode.create( 'p', {}, `Paragraph # ${i}` )
+        ]
+    ) 
+
+    VNode.render( __root, document.getElementById('app') )
+}
+
+
