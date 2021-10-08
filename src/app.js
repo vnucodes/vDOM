@@ -17,7 +17,23 @@ for ( let i = 1; i < 4; i++ ) {
             id: 'wrapper'
         },
         [
-            VNode.create( 'p', {}, `Paragraph # ${i}` )
+            VNode.create( 
+                'p', 
+                {}, 
+                [   
+                    VNode.create(
+                    'span', 
+                    {}, 
+                    `this is span # ${i}`
+                    ),
+
+                    VNode.create(
+                        'a', 
+                        { href: "https://google.com" }, 
+                        `this is link to Google`
+                    )
+                ] 
+            )
         ]
     ) 
 

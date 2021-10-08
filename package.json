@@ -12,5 +12,8 @@
   "devDependencies": {
     "webpack": "^5.57.1",
     "webpack-cli": "^4.9.0"
+  },
+  "dependencies": {
+    "deep-diff": "^1.0.2"
   }
 }

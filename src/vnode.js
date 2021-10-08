@@ -1,4 +1,6 @@
- export class VNode {
+import { diff } from 'deep-diff';
+
+export class VNode {
 
     // collection of all vDOMs created
     static vDoms = []
@@ -34,6 +36,7 @@
             __elm.appendChild( document.createTextNode( children ) )
 
         } else {
+            
             // create and append element child node
             for (const child of children) {                     
                 __elm.appendChild( this.beforeMount(child) )
@@ -45,24 +48,44 @@
     }
 
     // render virtual node/s and then mount on real DOM
-    static render ( __Node, $$target ) {
+    static render ( __node, $$target ) {        
         
         // remove previous vDom
         if ( this.vDoms.length === 2 ) this.vDoms.shift()  
         
         // push new vDom
-        this.vDoms.push( __Node )
+        this.vDoms.push( __node )
 
-        // push and mount
-        this.mount( this.beforeMount( __Node ), $$target )         
+        // mount else update
+        this.vDoms[1] 
+             ? this.update( this.beforeMount( __node ), $$target )  
+             : this.mount( this.beforeMount( __node ), $$target )    
         
     }
 
     // mount the virtual node on real dom
     static mount ( __node, $$target ) {
 
+        //console.log('mount')
+
         $$target.appendChild( __node )
         return __node
+    }
+
+    // update the virtual node on real dom
+    static update ( __node, $$target ) {
+
+        // diff the previous vDOM and current/new vDOM        
+        //console.log('update')
+
+        let vDomsDiffs = diff(this.vDoms[0], this.vDoms[1])
+
+        if ( vDomsDiffs ) {
+            for ( let vDomsDiff of vDomsDiffs  ) {               
+                console.log( vDomsDiff )
+            }
+        }       
+        
     }
 
 }
