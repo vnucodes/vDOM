@@ -2,8 +2,8 @@ import { diff } from 'deep-diff';
 
 export class VNode {
 
-    // collection of all vDOMs created
-    static vDoms = []
+    // collection of all vNodes created
+    static vNodes = []
 
     // create virtual nodes/elements
     static create ( type, props = null, children = [] ) {
@@ -51,13 +51,13 @@ export class VNode {
     static render ( __node, $$target ) {        
         
         // remove previous vDom
-        if ( this.vDoms.length === 2 ) this.vDoms.shift()  
+        if ( this.vNodes.length === 2 ) this.vNodes.shift()  
         
         // push new vDom
-        this.vDoms.push( __node )
+        this.vNodes.push( __node )
 
         // mount else update
-        this.vDoms[1] 
+        this.vNodes[1] 
              ? this.update( this.beforeMount( __node ), $$target )  
              : this.mount( this.beforeMount( __node ), $$target )    
         
@@ -69,7 +69,6 @@ export class VNode {
         //console.log('mount')
 
         $$target.appendChild( __node )
-        return __node
     }
 
     // update the virtual node on real dom
@@ -78,14 +77,49 @@ export class VNode {
         // diff the previous vDOM and current/new vDOM        
         //console.log('update')
 
-        let vDomsDiffs = diff(this.vDoms[0], this.vDoms[1])
+        let vNodesDiffs = diff(this.vNodes[0], this.vNodes[1])
 
-        if ( vDomsDiffs ) {
-            for ( let vDomsDiff of vDomsDiffs  ) {               
-                console.log( vDomsDiff )
+        if ( vNodesDiffs ) {
+            for ( let vNodesDiff of vNodesDiffs  ) {
+                
+                // if an 'update'
+                if ( vNodesDiff.kind === 'E' ) {
+                    this.diffUpdate( __node, $$target, vNodesDiff )
+                }
+
             }
-        }       
+        }   
         
+    }
+
+    // diff update
+    static diffUpdate( __node, $$target, diff ) {
+        
+        let targetElm = Array.from( $$target.children )[0]
+
+        diff.path.forEach( (path, index) => {  
+            
+            if ( index === diff.path.length - 1 ) return
+            
+            if ( path === 'children' ) {
+
+                targetElm = Array.from( targetElm.children )
+                console.log(index, path, targetElm)
+
+            } else {
+
+                targetElm = targetElm[ path ]
+                console.log(index, path, targetElm)
+            }
+
+        })
+
+        // if diff.rhs === string add textNode
+        if( typeof diff.rhs === 'string' ) {
+            let textNode = document.createTextNode( diff.rhs )
+            targetElm.removeChild( targetElm.firstChild )
+            targetElm.appendChild( textNode )
+        }
     }
 
 }

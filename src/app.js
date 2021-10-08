@@ -8,8 +8,8 @@ import { VNode } from "./vnode"
 let __root
 let count = 0
 
-for ( let i = 1; i < 4; i++ ) {
-
+function test () {
+    
     __root = VNode.create( 
         'div', 
         {
@@ -24,7 +24,7 @@ for ( let i = 1; i < 4; i++ ) {
                     VNode.create(
                     'span', 
                     {}, 
-                    `this is span # ${i}`
+                    `this is span # ${count}`
                     ),
 
                     VNode.create(
@@ -38,6 +38,11 @@ for ( let i = 1; i < 4; i++ ) {
     ) 
 
     VNode.render( __root, document.getElementById('app') )
+
+    count++
+
 }
+
+setInterval(test, 5000)
 
 
